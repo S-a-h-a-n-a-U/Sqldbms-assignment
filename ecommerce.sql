@@ -51,23 +51,31 @@ INSERT INTO OrderLine VALUES
 (104,5,1),
 (105,1,1),
 (105,2,20);
-SELECT * FROM Orders
-WHERE DateCreated='2026-06-29';
 SELECT *
 FROM Orders
-ORDER BY TotalAmount DESC
-LIMIT 1 OFFSET 1;
+WHERE DateCreated = '2026-06-29';
+SELECT OrderId,
+       UserId,
+       TotalAmount
+FROM (
+    SELECT OrderId,
+           UserId,
+           TotalAmount,
+           DENSE_RANK() OVER (ORDER BY TotalAmount DESC) AS RankNo
+    FROM Orders
+) RankedOrders
+WHERE RankNo = 2;
 SELECT OrderId
 FROM OrderLine
 GROUP BY OrderId
-HAVING SUM(Quantity)>5;
+HAVING SUM(Quantity) > 5;
 SELECT *
 FROM OrderLine
-WHERE ProductId=2;
-SELECT SUM(TotalAmount)
+WHERE ProductId = 2;
+SELECT SUM(TotalAmount) AS TotalSales
 FROM Orders
-WHERE DateCreated='2026-06-29';
+WHERE DateCreated = '2026-06-29';
 SELECT *
 FROM Orders
-WHERE UserId=1
+WHERE UserId = 1
 ORDER BY DateCreated DESC;
